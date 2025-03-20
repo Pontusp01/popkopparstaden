@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jourtelefon</title>
+    <style>
+        header {
+            background-color: #16344A;
+            padding: 20px;
+            color: white;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .header-title {
+                font-size: 20px;
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            font-size: 2em;
+            color: #333;
+        }
+        .link {
+            display: block;
+            font-size: 1.2em;
+            color: #800000;
+            margin: 20px;
+            text-decoration: underline;
+        }
+        .link:hover {
+            color: #003f87;
+        }
+        .image {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        #client-selector {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #e9e9e9;
+            border-radius: 10px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        select, input, button {
+            padding: 8px 15px;
+            margin: 10px 5px;
+            font-size: 1em;
+        }
+        button {
+            background-color: #800000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #003f87;
+        }
+        #status-message {
+            margin: 15px auto;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            max-width: 500px;
+            background-color: #f0f0f0;
+            color: #444;
+            font-size: 0.9em;
+        }
+        #urls-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .secondary-button {
+            background-color: #666;
+        }
+        .info-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+        .reset-notice {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #ffe6e6;
+            border-radius: 5px;
+            border-left: 4px solid #800000;
+            text-align: left;
+            display: none;
+        }
+        .filtered-client {
+            font-weight: bold;
+            color: #800000;
+        }
+    </style>
+    <script>
+        // Client info and URLs for filtered client
+        let currentClientInfo = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if URL indicates a specific client
+            detectClientFromUrl();
+            
+            // Check URL patterns for redirects
+            handleUrlPatterns();
+        });
+        
+        // Detect client from URL and filter interface
+        function detectClientFromUrl() {
+            const path = window.location.pathname;
+            const clientSelect = document.getElementById('client-select');
+            
+            // Extract client name from path
+            let clientFromUrl = null;
+            
+            let clients = [];
+            try {
+                clients = JSON.parse('{{ clients|tojson }}');
+            } catch (error) {
+                console.error('Error parsing clients JSON:', error);
+            } 
+            clients.forEach(client => {
+                if (path.includes(`/${client}`)) {
+                    clientFromUrl = client;
+                }
+            });
+            
+            if (clientFromUrl) {
+                console.log(`Detected client from URL: ${clientFromUrl}`);
+                
+                // Update page title
+                document.title = clientFromUrl.charAt(0).toUpperCase() + clientFromUrl.slice(1) + ' Jourtelefon';
+                
+                // Set the client name in places
+                const clientNameElements = document.getElementsByClassName('client-name');
+                for (let i = 0; i < clientNameElements.length; i++) {
+                    clientNameElements[i].textContent = clientFromUrl.charAt(0).toUpperCase() + clientFromUrl.slice(1);
+                }
+                
+                // Check if this client has been opened before
+                const clientKey = `client_${clientFromUrl}_opened`;
+                if (sessionStorage.getItem(clientKey) === 'true') {
+                    // Show the reset notice
+                    document.getElementById('reset-notice').style.display = 'block';
+                    document.getElementById('reset-client').textContent = clientFromUrl;
+                }
+                
+                // Filter the dropdown to only show this client
+                for (let i = 0; i < clientSelect.options.length; i++) {
+                    if (clientSelect.options[i].value !== clientFromUrl && clientSelect.options[i].value !== '') {
+                        clientSelect.options[i].style.display = 'none';
+                    }
+                }
+                
+                // Select the client in the dropdown
+                for (let i = 0; i < clientSelect.options.length; i++) {
+                    if (clientSelect.options[i].value === clientFromUrl) {
+                        clientSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+                
+                // Set current client
+                currentClientInfo = {
+                    name: clientFromUrl
+                };
+            }
+        }
+        
+        // Process URL patterns and redirect as needed
+        function handleUrlPatterns() {
+            const path = window.location.pathname;
+            
+            // Handle direct URL redirects
+            if (path.includes('/kopparstaden/main')) {
+                window.location.href = "{{ main_url }}";
+                return;
+            } else if (path.includes('/kopparstaden/case')) {
+                window.location.href = "{{ case_url }}";
+                return;
+            } else if (path.includes('/pop')) {
+                // Handle the pop functionality
+                let client = null;
+                
+                // Check for client in URL path first (format: /pop/client)
+                const pathParts = path.split('/');
+                if (pathParts.length >= 3 && pathParts[1] === 'pop') {
+                    client = pathParts[2];
+                }
+                
+                // If not found in path, check query parameters (format: /pop?client=name)
+                if (!client) {
+                    const params = new URLSearchParams(window.location.search);
+                    client = params.get('client');
+                }
+                
+                // For direct rendering from server-side template
+                if (!client && '{{ pop_client|default("") }}') {
+                    client = '{{ pop_client }}';
+                }
+                
+                if (client) {
+                    handleClientOpen(client);
+                }
+            }
+        }
+        
+        // Handle opening URLs for a client
+        // Handle opening URLs for a client
+    function handleClientOpen(client) {
+        fetch(`/api/urls/${client}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.urls && data.urls.length > 0) {
+                    // Get the first URL
+                    const firstUrl = data.urls[0];
+                    
+                    // Check if we've already opened URLs for this client in this session
+                    const clientKey = `client_${client}_opened`;
+                    const isFirstTime = !sessionStorage.getItem(clientKey);
+                    
+                    if (isFirstTime) {
+                        console.log(`Opening all URLs for client ${client}`);
+                        
+                        // Open the first URL in a new tab
+                        window.open(firstUrl, '_blank');
+                        
+                        // Open the rest of the URLs in new tabs
+                        for (let i = 1; i < data.urls.length; i++) {
+                            window.open(data.urls[i], '_blank');
+                        }
+                        
+                        // Mark that we've opened this client
+                        sessionStorage.setItem(clientKey, 'true');
+                        
+                        // Show a message
+                        showStatusMessage(`Öppnade ${data.urls.length} nya flikar för ${client}`);
+                    } else {
+                        console.log(`Client ${client} already opened in this session`);
+                        showStatusMessage(`Flikarna för ${client} är redan öppnade. Om du vill öppna dem igen, använd 'Återställ' knappen.`);
+                    }
+                } else {
+                    showStatusMessage(`Inga URLer konfigurerade för klient: ${client}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching URLs:', error);
+                showStatusMessage('Ett fel uppstod vid hämtning av URLer.');
+            });
+        }        
+        // Display a status message to the user
+        function showStatusMessage(message) {
+            const statusElement = document.getElementById('status-message');
+            statusElement.textContent = message;
+            statusElement.style.display = 'block';
+            
+            // Hide the message after 5 seconds
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Show URLs for a client without opening them
+        function showUrlList() {
+            const clientSelect = document.getElementById('client-select');
+            const client = clientSelect.value;
+            
+            if (client) {
+                fetch(`/api/urls/${client}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.urls && data.urls.length > 0) {
+                            displayUrlList(data.urls, client);
+                        } else {
+                            showStatusMessage(`Inga URLer konfigurerade för klient: ${client}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching URLs:', error);
+                        showStatusMessage('Ett fel uppstod vid hämtning av URLer.');
+                    });
+            } else {
+                showStatusMessage('Välj en klient först.');
+            }
+        }
+        
+        // Display the URL list for a client
+        function displayUrlList(urls, client) {
+            const container = document.getElementById('urls-container');
+            container.style.display = 'block';
+            
+            const urlsList = document.getElementById('opened-urls');
+            urlsList.innerHTML = '';
+            
+            document.getElementById('url-client-name').textContent = client;
+            
+            // Check if this client has been opened before
+            const clientKey = `client_${client}_opened`;
+            const hasBeenOpened = sessionStorage.getItem(clientKey) === 'true';
+            
+            urls.forEach((url, index) => {
+                const linkItem = document.createElement('a');
+                linkItem.href = url;
+                linkItem.className = 'link';
+                linkItem.target = '_blank';
+                
+                let urlText = url;
+                if (index === 0) {
+                    urlText += ' (Huvudsida)';
+                    linkItem.style.fontWeight = 'bold';
+                }
+                
+                if (hasBeenOpened) {
+                    urlText += ' (Redan öppnad)';
+                    linkItem.style.color = '#666';
+                }
+                
+                linkItem.textContent = urlText;
+                urlsList.appendChild(linkItem);
+            });
+        }
+        
+        // Reset tracking for the selected client or all clients
+        function resetTracking() {
+            const clientSelect = document.getElementById('client-select');
+            const client = clientSelect.value;
+            
+            if (client) {
+                // Reset only this client
+                const clientKey = `client_${client}_opened`;
+                sessionStorage.removeItem(clientKey);
+                showStatusMessage(`Återställt spårning för ${client}. Nästa gång kommer alla flikar att öppnas igen.`);
+                
+                // Hide reset notice if visible
+                document.getElementById('reset-notice').style.display = 'none';
+                
+                // If URL list is open, refresh it
+                if (document.getElementById('urls-container').style.display !== 'none') {
+                    showUrlList();
+                }
+            } else {
+                // Reset all clients
+                Object.keys(sessionStorage).forEach(key => {
+                    if (key.startsWith('client_') && key.endsWith('_opened')) {
+                        sessionStorage.removeItem(key);
+                    }
+                });
+                
+                // Hide reset notice
+                document.getElementById('reset-notice').style.display = 'none';
+                
+                showStatusMessage('Återställt spårning för alla klienter. Nästa gång kommer alla flikar att öppnas igen.');
+            }
+        }
+        
+        // Trigger client URL opening
+        function popUrls() {
+            const clientSelect = document.getElementById('client-select');
+            const client = clientSelect.value;
+            
+            if (client) {
+                // Navigate to the pop URL which will handle opening other tabs
+                handleClientOpen(client);
+            } else {
+                showStatusMessage('Välj en klient först.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='dynava.jpg') }}" alt="Logo" class="logo">
+        </div>
+    </header>
+    <h1><span class="client-name">Klient</span> jourtelefon</h1>
+    
+    <div id="client-selector">
+        <h2>Öppna webbplatser för klient</h2>
+        
+        <div id="reset-notice" class="reset-notice">
+            <p><strong>OBS!</strong> Du har redan öppnat flikar för <span id="reset-client" class="filtered-client">klient</span> i denna session.</p>
+            <p>Om du stängde några flikar och vill öppna dem igen, klicka på "Återställ" knappen först.</p>
+        </div>
+        
+        <select id="client-select">
+            <option value="">Välj klient</option>
+            {% for client in clients %}
+            <option value="{{ client }}">{{ client|capitalize }}</option>
+            {% endfor %}
+        </select>
+        <div>
+            <button onclick="popUrls()">Öppna webbplatser</button>
+            <button onclick="showUrlList()" class="secondary-button">Visa alla URLer</button>
+            <button onclick="resetTracking()" class="secondary-button">Återställ</button>
+        </div>
+        <div class="info-text">
+            Om du har stängt någon flik, välj klient och klicka på "Återställ" för att kunna öppna alla flikar igen.
+        </div>
+        <div id="status-message"></div>
+    </div>
+    
+    <div id="urls-container">
+        <h2>Webbplatser för <span id="url-client-name"></span></h2>
+        <div id="opened-urls"></div>
+    </div>
+</body>
+</html>

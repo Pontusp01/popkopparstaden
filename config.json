@@ -1,0 +1,29 @@
+{
+  "kopparstaden": {
+    "main": "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/",
+    "case": "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/_layouts/15/listform.aspx?PageType=8&ListId=%7B7E7F7DF5-2AB4-4CB9-86BA-797C4FFC01F6%7D",
+    "urls": [
+      "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/",
+      "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/_layouts/15/listform.aspx?PageType=8&ListId=%7B7E7F7DF5-2AB4-4CB9-86BA-797C4FFC01F6%7D",
+      "https://kopparstaden.se"
+    ]
+  },
+  "dynava": {
+    "main": "https://dynava.se",
+    "portal": "https://portal.dynava.se",
+    "urls": [
+      "https://dynava.se",
+      "https://portal.dynava.se",
+      "https://support.dynava.se"
+    ]
+  },
+  "dalarna": {
+    "main": "https://region.dalarna.se",
+    "portal": "https://regiondalarna.se/patients",
+    "urls": [
+      "https://region.dalarna.se",
+      "https://regiondalarna.se/patients",
+      "https://regiondalarna.se/contact"
+    ]
+  }
+}

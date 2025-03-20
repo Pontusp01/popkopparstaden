@@ -1,0 +1,29 @@
+# Logs
+logs/
+*.log
+
+# Web config
+web.config
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.pyc
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# VS Code settings
+.vscode/
+
+# Environment variables
+.env
+
+# IDE specific files
+.idea/
+*.swp
+*.swo
