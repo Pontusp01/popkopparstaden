@@ -1,11 +1,19 @@
 {
   "kopparstaden": {
-    "main": "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/",
-    "case": "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/_layouts/15/listform.aspx?PageType=8&ListId=%7B7E7F7DF5-2AB4-4CB9-86BA-797C4FFC01F6%7D",
+    "main": "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413",
+    "case": "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/Lists/renden/NewForm.aspx",
     "urls": [
-      "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/",
-      "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/_layouts/15/listform.aspx?PageType=8&ListId=%7B7E7F7DF5-2AB4-4CB9-86BA-797C4FFC01F6%7D",
+      "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413",
+      "https://dynavagroup.sharepoint.com/sites/msteams_7303a6_911413/Lists/renden/NewForm.aspx",
       "https://kopparstaden.se"
+    ]
+  },
+  "iboxen": {
+    "main": "https://dynavagroup.sharepoint.com/sites/CCClientsSweden-iBoxen",
+    "case": "https://dynavagroup.sharepoint.com/sites/CCClientsSweden-iBoxen/_layouts/15/listform.aspx?PageType=8&ListId=%7B65B87362-25FC-4614-BBDF-0FEB7FD1ACD6%7D&RootFolder=&Source=https%3A%2F%2Fdynavagroup.sharepoint.com%2Fsites%2FCCClientsSweden-iBoxen%2FLists%2FiBoxenKategorier%2FStandard.aspx&ContentTypeId=0x01004ADC45AAA03636499C8CE4C85BF8994C00CD6D2DD77F84804D975F11263522B508",
+    "urls": [
+      "https://dynavagroup.sharepoint.com/sites/CCClientsSweden-iBoxen",
+      "https://dynavagroup.sharepoint.com/sites/CCClientsSweden-iBoxen/_layouts/15/listform.aspx?PageType=8&ListId=%7B65B87362-25FC-4614-BBDF-0FEB7FD1ACD6%7D&RootFolder=&Source=https%3A%2F%2Fdynavagroup.sharepoint.com%2Fsites%2FCCClientsSweden-iBoxen%2FLists%2FiBoxenKategorier%2FStandard.aspx&ContentTypeId=0x01004ADC45AAA03636499C8CE4C85BF8994C00CD6D2DD77F84804D975F11263522B508"
     ]
   },
   "dynava": {
@@ -24,6 +32,24 @@
       "https://region.dalarna.se",
       "https://regiondalarna.se/patients",
       "https://regiondalarna.se/contact"
+    ]
+  },
+  "mimer": {
+    "main": "https://mimer.samres.services",
+    "urls": [
+      "https://mimer.samres.services"
+    ]
+  },
+  "powerapps": {
+    "main": "https://apps.powerapps.com/play/e52082b9-7dad-4660-96a9-8271a3e2993c?tenantId=5c97a130-80fd-4c9a-9176-803eef47792f",
+    "urls": [
+      "https://apps.powerapps.com/play/e52082b9-7dad-4660-96a9-8271a3e2993c?tenantId=5c97a130-80fd-4c9a-9176-803eef47792f"
+    ]
+  },
+  "delonghi": {
+    "main": "my359355-sso.crm.ondemand.com",
+    "urls": [
+      "my359355-sso.crm.ondemand.com"
     ]
   }
 }
